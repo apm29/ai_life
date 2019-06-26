@@ -1,0 +1,1 @@
+export 'main_index_model.dart';
