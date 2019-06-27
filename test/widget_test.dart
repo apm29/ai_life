@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:ai_life/main.dart';
-import 'package:ai_life/persistence/sp.dart';
+import 'package:ai_life/persistence/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async{
@@ -31,11 +31,7 @@ void main() async{
 //    expect(find.text('1'), findsOneWidget);
 //  });
 
-  sp = await SharedPreferences.getInstance();
 
-  DioUtil().post("/permission/login",formData: {
-    "userName":"apm","password":"123456"
-  }).then((resp){
-    print('$resp');
-  });
+  var clamp = (-100).clamp(0, 60);
+  print(clamp.toString());
 }

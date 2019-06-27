@@ -66,6 +66,24 @@ flutter:
      - family: SoukouMincho
        fonts:
          - asset: font/SoukouMincho.ttf
+     - family: Quanzhen
+       fonts:
+         - asset: font/quanzhen.ttf
+           weight: 700
+     - family: Determination
+       fonts:
+         - asset: font/determination.otf
+           weight: 700
+     - family: Baizhou
+       fonts:
+         - asset: font/235h-1.ttf
+           weight: 700
+     - family: Weiruanyahei
+       fonts:
+         - asset: font/wryh.ttf
+           weight: 800
+         - asset: font/determination.otf
+           weight: 700
 #     - family: Trajan Pro
 #       fonts:
 #         - asset: fonts/TrajanPro.ttf

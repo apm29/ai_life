@@ -4,7 +4,8 @@ import 'package:ai_life/configs/configs.dart';
 import 'package:ai_life/model/base_response.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:ai_life/persistence/sp.dart';
+import 'package:ai_life/persistence/const.dart';
+import 'package:flutter/material.dart';
 
 typedef JsonProcessor<T> = T Function(dynamic json);
 
@@ -22,7 +23,7 @@ class DioUtil {
     return _instance;
   }
 
-  factory DioUtil(){
+  factory DioUtil() {
     return getInstance();
   }
 
@@ -46,6 +47,7 @@ class DioUtil {
     ProgressCallback onSendProgress,
   }) async {
     processor = processor ?? (dynamic raw) => null;
+    formData = formData ?? {};
     cancelToken = cancelToken ?? CancelToken();
     onReceiveProgress = onReceiveProgress ??
         (count, total) {
@@ -76,10 +78,11 @@ class DioUtil {
       dynamic _rawData = map["data"];
       T data = processor(_rawData);
       return BaseResp<T>(status, data, token, text);
-    }).catchError((e,StackTrace s) {
+    }).catchError((e, StackTrace s) {
       debugPrint(e.toString());
       debugPrint(s.toString());
       return BaseResp.error(message: e.toString()) as BaseResp<T>;
     });
+
   }
 }

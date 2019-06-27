@@ -2,7 +2,7 @@ import 'package:ai_life/remote/api.dart';
 import 'package:flutter/foundation.dart';
 
 import 'base_response.dart';
-import 'package:ai_life/persistence/sp.dart';
+import 'package:ai_life/persistence/const.dart';
 
 class UserModel extends ChangeNotifier {
   UserInfo _userInfo;
@@ -34,7 +34,6 @@ class UserModel extends ChangeNotifier {
 
   void _tryLogin() {
     Api.login().then((resp) {
-      print(resp.token);
       login(resp.data?.userInfo, resp.token);
     });
   }
@@ -46,3 +45,4 @@ class UserModel extends ChangeNotifier {
 
 
 }
+

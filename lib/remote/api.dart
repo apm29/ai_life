@@ -11,4 +11,31 @@ class Api {
       return UserInfoWrapper.fromJson(s);
     });
   }
+
+  static Future<BaseResp<List<AnnouncementType>>> getAnnounceTypes() async {
+    return DioUtil().post("/business/noticeDict/getAllType",
+        processor: (s) {
+      if(s is List){
+        return s.map((map){
+          return AnnouncementType.fromJson(map);
+        }).toList();
+      }
+      return [];
+    });
+  }
+
+  static Future<BaseResp<List<Announcement>>> getAnnouncements(String types) async {
+    return DioUtil().post("/business/notice/getAllNewNotice",
+        formData: {
+          "noticeType":types
+        },
+        processor: (s) {
+          if(s is List){
+            return s.map((map){
+              return Announcement.fromJson(map);
+            }).toList();
+          }
+          return [];
+        });
+  }
 }
