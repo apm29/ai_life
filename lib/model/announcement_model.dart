@@ -2,6 +2,7 @@ import 'package:ai_life/remote/api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'base_response.dart';
+
 const List<Color> colors = const [
   Colors.purple,
   Colors.lightBlue,
@@ -9,6 +10,7 @@ const List<Color> colors = const [
   const Color(0xFF558B2F),
   const Color(0xFFBF360C),
 ];
+
 class AnnouncementModel extends ChangeNotifier {
   List<AnnouncementType> _announcementTypes;
 
@@ -32,7 +34,6 @@ class AnnouncementModel extends ChangeNotifier {
 
   AnnouncementModel() {
     _getAllAnnouncement();
-    print('construct');
   }
 
   void _getAllAnnouncement() {
@@ -51,7 +52,7 @@ class AnnouncementModel extends ChangeNotifier {
   }
 
   String get typesString =>
-      _announcementTypes.map((e) => e?.typeId).toList().join(",");
+      _announcementTypes?.map((e) => e?.typeId)?.toList()?.join(",") ?? "";
 
   List<Announcement> get announcements => _announcementList ?? [];
 
@@ -59,17 +60,16 @@ class AnnouncementModel extends ChangeNotifier {
 
   String typeTitle(int index) {
     return announcementTypes.firstWhere((type) {
-      return type.typeId == announcements[index].noticeType;
-    }, orElse: () => null)?.typeName??"";
+          return type.typeId == announcements[index].noticeType;
+        }, orElse: () => null)?.typeName ??
+        "";
   }
 
-  String title(int index){
+  String title(int index) {
     return announcements[index].noticeTitle;
   }
 
-  Color bannerColor(int index){
-    return colors[announcements[index].noticeType %
-        (colors.length)];
+  Color bannerColor(int index) {
+    return colors[announcements[index].noticeType % (colors.length)];
   }
-
 }

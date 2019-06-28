@@ -1,8 +1,13 @@
+
+import 'package:oktoast/oktoast.dart';
+
 import 'configs/configs.dart';
 import 'index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'model/announcement_model.dart';
-import 'model/base_response.dart';
+import 'model/district_model.dart';
+import 'model/home_end_scroll_model.dart';
+import 'model/theme_model.dart';
 import 'model/user_model.dart';
 import 'persistence/const.dart';
 
@@ -14,24 +19,30 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider.value(value: MainIndexModel()),
-        ChangeNotifierProvider.value(value: UserModel(),),
-        ChangeNotifierProvider.value(value: AnnouncementModel())
-      ],
-      child: MaterialApp(
-        title: APP_NAME,
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          fontFamily: "Determination",
+    return OKToast(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: MainIndexModel()),
+          ChangeNotifierProvider.value(value: UserModel()),
+          ChangeNotifierProvider.value(value: AnnouncementModel()),
+          ChangeNotifierProvider.value(value: AppThemeModel()),
+          ChangeNotifierProvider.value(value: DistrictModel()),
+          ChangeNotifierProvider.value(value: HomeEndScrollModel()),
+        ],
+        child: Consumer<AppThemeModel>(
+          builder: (context, model, child) {
+            return MaterialApp(
+              title: APP_NAME,
+              theme: model.appTheme,
+              debugShowCheckedModeBanner: APP_DEBUG,
+              routes: {
+                "/": (context) {
+                  return MainPage();
+                }
+              },
+            );
+          },
         ),
-        debugShowCheckedModeBanner: APP_DEBUG,
-        routes: {
-          "/": (context) {
-            return MainPage();
-          }
-        },
       ),
     );
   }

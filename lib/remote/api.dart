@@ -13,10 +13,9 @@ class Api {
   }
 
   static Future<BaseResp<List<AnnouncementType>>> getAnnounceTypes() async {
-    return DioUtil().post("/business/noticeDict/getAllType",
-        processor: (s) {
-      if(s is List){
-        return s.map((map){
+    return DioUtil().post("/business/noticeDict/getAllType", processor: (s) {
+      if (s is List) {
+        return s.map((map) {
           return AnnouncementType.fromJson(map);
         }).toList();
       }
@@ -24,18 +23,28 @@ class Api {
     });
   }
 
-  static Future<BaseResp<List<Announcement>>> getAnnouncements(String types) async {
+  static Future<BaseResp<List<Announcement>>> getAnnouncements(
+      String types) async {
     return DioUtil().post("/business/notice/getAllNewNotice",
-        formData: {
-          "noticeType":types
-        },
+        formData: {"noticeType": types}, processor: (s) {
+      if (s is List) {
+        return s.map((map) {
+          return Announcement.fromJson(map);
+        }).toList();
+      }
+      return [];
+    });
+  }
+
+  static Future<BaseResp<List<DistrictDetail>>> getCurrentDistricts() async {
+    return DioUtil().post("/business/district/findDistrictInfo",
         processor: (s) {
-          if(s is List){
-            return s.map((map){
-              return Announcement.fromJson(map);
-            }).toList();
-          }
-          return [];
-        });
+      if (s is List) {
+        return s.map((map) {
+          return DistrictDetail.fromJson(map);
+        }).toList();
+      }
+      return [];
+    });
   }
 }

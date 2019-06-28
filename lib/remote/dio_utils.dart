@@ -63,7 +63,7 @@ class DioUtil {
       data: FormData.from(formData),
       options: RequestOptions(
         responseType: ResponseType.json,
-        headers: {AuthorizationHeader: sp.getString(Key_Token)},
+        headers: {AuthorizationHeader: sp.getString(KEY_TOKEN)},
       ),
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
@@ -81,7 +81,7 @@ class DioUtil {
     }).catchError((e, StackTrace s) {
       debugPrint(e.toString());
       debugPrint(s.toString());
-      return BaseResp.error(message: e.toString()) as BaseResp<T>;
+      return BaseResp.error(message: e.toString(),data: null as T) ;
     });
 
   }

@@ -1,12 +1,10 @@
-import 'package:ai_life/configs/themes.dart';
-import 'package:ai_life/model/announcement_model.dart';
-import 'package:ai_life/model/user_model.dart';
-import 'package:ai_life/remote/api.dart';
-import 'package:ai_life/widget/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 import 'dart:math' as math;
+
+import '../index.dart';
+import 'home_page.dart';
+import 'mine_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -16,107 +14,40 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: DecoratedBox(
-              decoration: APP_DEFAULT_DECO,
-              child: SizedBox(
-                height: MediaQuery.of(context).padding.top,
-              ),
-            ),
-          ),
-          SliverAppBar(
-            expandedHeight: MediaQuery.of(context).viewInsets.top,
-            floating: true,
-            forceElevated: true,
-            snap: true,
-            centerTitle: true,
-            flexibleSpace: Consumer<UserModel>(
-              builder: (context, UserModel model, child) {
-                return DecoratedBox(
-                  decoration: APP_DEFAULT_DECO,
-                  child: Center(
-                    child: Text(
-                      "USER_ID:${model.userId ?? ""}",
-                    ),
-                  ),
-                );
-              },
-            ),
-            title: Text("Sliver标题"),
-          ),
-          Consumer<AnnouncementModel>(
-            builder: (context, model, child) {
-              if (model.announcements.isEmpty) {
-                return SliverToBoxAdapter(
-                    child: Center(child: CircularProgressIndicator()));
-              }
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return ListTile(
-                      leading: Container(
-                        constraints: BoxConstraints(minWidth: 72),
-                        padding: EdgeInsets.all(3),
-                        child: Text(
-                          model.typeTitle(index),
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                          maxLines: 100,
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                        ),
-                        decoration: BoxDecoration(
-                            color: model.bannerColor(index),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
-                      ),
-                      title: Text(model.title(index)),
-                    );
-                  },
-                  childCount: model.announcements?.length,
-                ),
-              );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          return Future.delayed(Duration(seconds: 2));
+        },
+        child: Consumer<MainIndexModel>(
+          builder: (BuildContext context, MainIndexModel value, Widget child) {
+            switch (value.currentIndex) {
+              case 0:
+                return HomePage();
+              case 1:
+                return MinePage();
+              default:
+                throw ArgumentError("错误的主页索引-${value.currentIndex}");
+            }
+          },
+        ),
+      ),
+      bottomNavigationBar: Consumer<MainIndexModel>(
+        builder: (BuildContext context, MainIndexModel value, Widget child) {
+          return BottomNavigationBar(
+            currentIndex: value.currentIndex,
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home), title: Text("主页")),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.person), title: Text("我的"))
+            ],
+            onTap: (index) {
+              value.currentIndex = index;
             },
-          ),
-          SliverToBoxAdapter(
-            child: Consumer<UserModel>(
-              builder: (context, UserModel value, child) {
-                return GradientButton(
-                  Text(
-                    value.isLogin ? "登出" : "登录",
-                  ),
-                  onPressed: () async {
-                    return value.isLogin
-                        ? value.logout()
-                        : Api.login().then((resp) {
-                            if (resp.success) {
-                              value.login(resp.data?.userInfo, resp.token);
-                            }
-                            return;
-                          });
-                  },
-                );
-              },
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Text("123" * 100),
-          ),
-          SliverFillRemaining(
-            child: Center(
-              child: CircleAvatar(
-                foregroundColor: Color(0xffffffff),
-                child: Text("User"),
-                backgroundImage: NetworkImage(
-                  "http://files.ciih.net/M00/07/13/wKjIo10Sxv6ABEX1AAHpB8duvck468.jpg",
-                ),
-                backgroundColor: Colors.yellow[900],
-                radius: 72,
-              ),
-            ),
-          )
-        ],
+          );
+        },
       ),
     );
   }

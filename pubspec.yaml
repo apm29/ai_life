@@ -30,6 +30,10 @@ dependencies:
 
   shared_preferences: ^0.4.3
 
+  flutter_swiper: ^1.1.6
+
+  oktoast: ^2.1.9
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

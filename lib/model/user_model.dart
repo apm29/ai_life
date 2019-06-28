@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ai_life/remote/api.dart';
 import 'package:flutter/foundation.dart';
 
@@ -9,22 +11,24 @@ class UserModel extends ChangeNotifier {
   String _token;
 
   String get userId => _userInfo?.userId;
+
   String get token => _token;
-  bool get isLogin => userId != null && token!=null;
+
+  bool get isLogin => userId != null && token != null;
 
   void login(UserInfo info, String token) {
     _userInfo = info;
     _token = token;
-    sp.setString(Key_User_Info, info.toString());
-    sp.setString(Key_Token, token);
+    sp.setString(KEY_USER_INFO, info.toString());
+    sp.setString(KEY_TOKEN, token);
     notifyListeners();
   }
 
   void logout() {
     _userInfo = null;
     _token = null;
-    sp.setString(Key_User_Info, null);
-    sp.setString(Key_Token, null);
+    sp.setString(KEY_USER_INFO, null);
+    sp.setString(KEY_TOKEN, null);
     notifyListeners();
   }
 
@@ -33,16 +37,16 @@ class UserModel extends ChangeNotifier {
   }
 
   void _tryLogin() {
-    Api.login().then((resp) {
-      login(resp.data?.userInfo, resp.token);
-    });
+    var userInfoStr = sp.getString(KEY_USER_INFO);
+    var token = sp.getString(KEY_TOKEN);
+    Map<String, dynamic> map =
+        userInfoStr == null ? null : json.decode(userInfoStr);
+    UserInfo userInfo = map == null ? null : UserInfo.fromJson(map);
+    login(userInfo, token);
   }
 
   @override
   String toString() {
     return 'UserModel{_userInfo: $_userInfo, _token: $_token}';
   }
-
-
 }
-

@@ -1,4 +1,4 @@
-class BaseResp<T>{
+class BaseResp<T> {
   String status;
   T data;
   String token;
@@ -6,14 +6,14 @@ class BaseResp<T>{
 
   BaseResp(this.status, this.data, this.token, this.text);
 
-  BaseResp.error({String message = "失败"}){
+  BaseResp.error({String message = "失败",T data}) {
     this.status = "0";
     this.data = null;
     this.token = null;
     this.text = message;
   }
 
-  BaseResp.success({String message = "成功"}){
+  BaseResp.success({String message = "成功"}) {
     this.status = "1";
     this.data = null;
     this.token = null;
@@ -31,11 +31,8 @@ class BaseResp<T>{
     return sb.toString();
   }
 
-  bool get success=>status == "1";
-
+  bool get success => status == "1";
 }
-
-
 
 class UserInfoWrapper {
   UserInfo userInfo;
@@ -102,7 +99,6 @@ class AnnouncementType {
   }
 }
 
-
 class Announcement {
   int noticeId;
   String noticeTitle;
@@ -120,22 +116,23 @@ class Announcement {
   int likeNum;
   int commentNum;
 
-  Announcement(
-      {this.noticeId,
-        this.noticeTitle,
-        this.noticeContent,
-        this.noticeBanner,
-        this.noticeType,
-        this.noticeScope,
-        this.districtId,
-        this.userId,
-        this.companyId,
-        this.userName,
-        this.companyName,
-        this.createTime,
-        this.orderNo,
-        this.likeNum,
-        this.commentNum,});
+  Announcement({
+    this.noticeId,
+    this.noticeTitle,
+    this.noticeContent,
+    this.noticeBanner,
+    this.noticeType,
+    this.noticeScope,
+    this.districtId,
+    this.userId,
+    this.companyId,
+    this.userName,
+    this.companyName,
+    this.createTime,
+    this.orderNo,
+    this.likeNum,
+    this.commentNum,
+  });
 
   Announcement.fromJson(Map<String, dynamic> json) {
     noticeId = json['noticeId'];
@@ -177,4 +174,39 @@ class Announcement {
 }
 
 
+class DistrictDetail {
+  int districtId;
+  String districtName;
+  String districtInfo;
+  String districtAddr;
+  String districtPic;
+  int orderNo;
 
+  DistrictDetail(
+      {this.districtId,
+        this.districtName,
+        this.districtInfo,
+        this.districtAddr,
+        this.districtPic,
+        this.orderNo});
+
+  DistrictDetail.fromJson(Map<String, dynamic> json) {
+    districtId = json['districtId'];
+    districtName = json['districtName'];
+    districtInfo = json['districtInfo'];
+    districtAddr = json['districtAddr'];
+    districtPic = json['districtPic'];
+    orderNo = json['orderNo'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['districtId'] = this.districtId;
+    data['districtName'] = this.districtName;
+    data['districtInfo'] = this.districtInfo;
+    data['districtAddr'] = this.districtAddr;
+    data['districtPic'] = this.districtPic;
+    data['orderNo'] = this.orderNo;
+    return data;
+  }
+}
