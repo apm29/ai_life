@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:ai_life/remote/api.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'base_response.dart';
 import 'package:ai_life/persistence/const.dart';
@@ -11,6 +13,7 @@ class UserModel extends ChangeNotifier {
   String _token;
 
   String get userId => _userInfo?.userId;
+  String get userName => _userInfo?.userName;
 
   String get token => _token;
 
@@ -29,14 +32,15 @@ class UserModel extends ChangeNotifier {
     _token = null;
     sp.setString(KEY_USER_INFO, null);
     sp.setString(KEY_TOKEN, null);
+    sp.clear();
     notifyListeners();
   }
 
   UserModel() {
-    _tryLogin();
+    tryLoginWithLocalToken();
   }
 
-  void _tryLogin() {
+  void tryLoginWithLocalToken() {
     var userInfoStr = sp.getString(KEY_USER_INFO);
     var token = sp.getString(KEY_TOKEN);
     Map<String, dynamic> map =
@@ -48,5 +52,9 @@ class UserModel extends ChangeNotifier {
   @override
   String toString() {
     return 'UserModel{_userInfo: $_userInfo, _token: $_token}';
+  }
+
+  static UserModel of(BuildContext context) {
+    return Provider.of<UserModel>(context, listen: false);
   }
 }

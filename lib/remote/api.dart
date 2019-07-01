@@ -4,16 +4,12 @@ import 'dio_utils.dart';
 
 class Api {
   static Future<BaseResp<UserInfoWrapper>> login() async {
-    return DioUtil().post(
-      "/permission/login",
-      formData: {"userName": "apm", "password": "123456"},
-      onSendProgress: (count, total) {},
-      onReceiveProgress: (count, total) {},
-      processor: (s) {
-        return UserInfoWrapper.fromJson(s);
-      },
-      showProgress: true
-    );
+    return DioUtil().post("/permission/login",
+        formData: {"userName": "apm", "password": "123456"},
+        onSendProgress: (count, total) {},
+        onReceiveProgress: (count, total) {}, processor: (s) {
+      return UserInfoWrapper.fromJson(s);
+    }, showProgress: true,loadingText: "正在登陆..",);
   }
 
   static Future<BaseResp<List<AnnouncementType>>> getAnnounceTypes() async {

@@ -18,7 +18,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          return Future.delayed(Duration(seconds: 2));
+          UserModel.of(context).tryLoginWithLocalToken();
+          await AnnouncementModel.of(context).tryFetchAllAnnouncement();
+          await DistrictModel.of(context).tryFetchCurrentDistricts();
+          return;
         },
         child: Consumer<MainIndexModel>(
           builder: (BuildContext context, MainIndexModel value, Widget child) {
@@ -65,8 +68,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           decoration: BoxDecoration(
                               shape: BoxShape.circle, color: Colors.red),
                           child: Consumer<NotificationModel>(
-                            builder: (BuildContext context, value, Widget child) {
-                              return  Text(
+                            builder:
+                                (BuildContext context, value, Widget child) {
+                              return Text(
                                 value.unreadNotificationCountText,
                                 style: TextStyle(color: Colors.white),
                               );

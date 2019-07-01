@@ -45,6 +45,7 @@ class _LocationSwitchWidgetState extends State<LocationSwitchWidget>
       child: AnimatedIcon(
         size: 36,
         icon: AnimatedIcons.close_menu,
+        color: Colors.white,
         progress: _animation,
       ),
     );
@@ -65,7 +66,7 @@ class _LocationSwitchWidgetState extends State<LocationSwitchWidget>
                 if (!model.hasData) {
                   return RefreshHintWidget(
                     onPress: () async {
-                      model.tryGetCurrentDistricts();
+                      model.tryFetchCurrentDistricts();
                     },
                   );
                 }

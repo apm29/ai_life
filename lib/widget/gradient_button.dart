@@ -11,7 +11,8 @@ class GradientButton extends StatefulWidget {
   final Gradient gradient;
   final PressCallback onPressed;
 
-  GradientButton(this.child, {
+  GradientButton(
+    this.child, {
     this.gradient = _kDefaultGradient,
     @required this.onPressed,
   }) : assert(onPressed != null);
@@ -41,20 +42,22 @@ class _GradientButtonState extends State<GradientButton> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-                onTap: () async {
-                  if (_loading) {
-                    return null;
-                  }
-                  startLoading();
-                  return widget.onPressed.call().then((_) {
-                    Future.delayed(Duration(milliseconds: _kDelayMilli))
-                        .then((_) {
-                      stopLoading();
-                    });
-                  }).catchError((e) {
-                    stopLoading();
-                  });
-                },
+                onTap: _loading
+                    ? null
+                    : () async {
+                        if (_loading) {
+                          return null;
+                        }
+                        startLoading();
+                        return widget.onPressed.call().then((_) {
+                          Future.delayed(Duration(milliseconds: _kDelayMilli))
+                              .then((_) {
+                            stopLoading();
+                          });
+                        }).catchError((e) {
+                          stopLoading();
+                        });
+                      },
                 child: Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
@@ -69,7 +72,7 @@ class _GradientButtonState extends State<GradientButton> {
                           child: Container(
                             child: widget.child,
                             constraints:
-                            BoxConstraints(minHeight: 32.0, minWidth: 72.0),
+                                BoxConstraints(minHeight: 32.0, minWidth: 72.0),
                             padding: EdgeInsets.symmetric(
                                 vertical: 8, horizontal: 16),
                           ),

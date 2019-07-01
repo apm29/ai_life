@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -18,7 +19,7 @@ class AppThemeModel extends ChangeNotifier {
 
     ThemeData(
       primarySwatch: Colors.blue,
-      fontFamily: "SoukouMincho",
+      fontFamily: "Quanzhen",
         iconTheme: IconThemeData(
             color: Colors.purple,
             size: 24
@@ -44,5 +45,11 @@ class AppThemeModel extends ChangeNotifier {
       currentThemeIndex = 0;
     }
   }
+
+
+  static AppThemeModel of(BuildContext context) {
+    return Provider.of<AppThemeModel>(context, listen: false);
+  }
+
 
 }

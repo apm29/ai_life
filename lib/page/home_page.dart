@@ -6,8 +6,10 @@ import 'package:ai_life/model/home_end_scroll_model.dart';
 import 'package:ai_life/model/theme_model.dart';
 import 'package:ai_life/model/user_model.dart';
 import 'package:ai_life/remote/api.dart';
+import 'package:ai_life/widget/ease_icon_button.dart';
 import 'package:ai_life/widget/gradient_button.dart';
 import 'package:ai_life/widget/location_switch_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
@@ -60,11 +62,30 @@ class _HomePageState extends State<HomePage> {
                 key: PageStorageKey(11),
               ),
             ),
+            Consumer<UserModel>(
+              builder: (BuildContext context, UserModel value, Widget child) {
+                return SliverGrid.count(
+                  childAspectRatio: 0.88,
+                  crossAxisCount: 4,
+                  children: <Widget>[
+                    EaseIconButton(0, "访客管理", () {}, CupertinoIcons.person),
+                    EaseIconButton(1, "找物业", () {}, CupertinoIcons.home),
+                    EaseIconButton(2, "找社区", () {}, CupertinoIcons.group),
+                    EaseIconButton(3, "找警察", () {}, CupertinoIcons.flag),
+                  ],
+                );
+              },
+            ),
             Consumer<AnnouncementModel>(
               builder: (context, model, child) {
                 if (model.announcements.isEmpty) {
                   return SliverToBoxAdapter(
-                      child: Center(child: CircularProgressIndicator()));
+                    child: Container(
+                      constraints: BoxConstraints(minHeight: 160),
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 }
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
@@ -81,14 +102,18 @@ class _HomePageState extends State<HomePage> {
                             softWrap: true,
                           ),
                           decoration: BoxDecoration(
-                              color: model.bannerColor(index),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5))),
+                            gradient: model.bannerColor(index),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(72),
+                            ),
+                          ),
                         ),
-                        title: Text(model.title(index)),
+                        title: Text(model.title(index),style: TextStyle(
+                          color: Colors.blueGrey[800],fontSize: 14
+                        ),),
                       );
                     },
-                    childCount: model.announcements?.length,
+                    childCount: model.announcements?.length??0,
                   ),
                 );
               },
@@ -107,23 +132,31 @@ class _HomePageState extends State<HomePage> {
             ),
             SliverFillRemaining(
               child: Center(
-                child: CircleAvatar(
-                  foregroundColor: Color(0xffffffff),
-                  backgroundColor: Colors.yellow[400],
-                  radius: 72,
-                  child: InkWell(
-                    onTap: () {},
-                    splashColor: Colors.deepPurpleAccent,
-                    child: Container(
-                      height: 72,
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.all(Radius.circular(72))
-                      ),
-                      child: Text("紧急呼叫"),
+                child: InkWell(
+                  onTap: () {},
+                  splashColor: Colors.lightGreen,
+                  child: Container(
+                    constraints: BoxConstraints.tight(Size(120, 120)),
+                    decoration: BoxDecoration(
+                      color: Color(0x77FF8F00),
+                      shape: BoxShape.circle,
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(72)),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(
+                          Icons.call,
+                          color: Colors.red,
+                        ),
+                        Text(
+                          "紧急呼叫",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ],
+                    ),
                   ),
+                  borderRadius: BorderRadius.all(Radius.circular(72)),
                 ),
               ),
             )
@@ -145,10 +178,12 @@ class _HomePageState extends State<HomePage> {
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.elliptical(16, 12))
-              ),
+                  borderRadius: BorderRadius.all(Radius.elliptical(16, 12))),
               mini: true,
-              child: Icon(Icons.call,size: 16,),
+              child: Icon(
+                Icons.call,
+                size: 16,
+              ),
             ),
           );
         },

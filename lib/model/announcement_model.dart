@@ -1,14 +1,24 @@
 import 'package:ai_life/remote/api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'base_response.dart';
 
-const List<Color> colors = const [
+const List<Color> colors =const [
+  Colors.redAccent,
   Colors.purple,
   Colors.lightBlue,
-  const Color(0xFFF57C00),
-  const Color(0xFF558B2F),
-  const Color(0xFFBF360C),
+  Colors.teal,
+  Colors.pinkAccent,
+  Colors.deepPurpleAccent,
+  Colors.blueAccent,
+  Colors.green,
+  Colors.teal,
+  Colors.lightBlue,
+  Colors.lightBlue,
+  Colors.purple,
+  Colors.cyan,
+  Colors.lightGreen
 ];
 
 class AnnouncementModel extends ChangeNotifier {
@@ -33,11 +43,11 @@ class AnnouncementModel extends ChangeNotifier {
   }
 
   AnnouncementModel() {
-    _getAllAnnouncement();
+    tryFetchAllAnnouncement();
   }
 
-  void _getAllAnnouncement() {
-    Future.delayed(Duration(seconds: 2)).then((_) {
+  Future tryFetchAllAnnouncement() async {
+    return Future.delayed(Duration(seconds: 0)).then((_) {
       Api.getAnnounceTypes().then((resp) {
         if (resp.success) {
           announcementTypes = resp.data;
@@ -47,6 +57,7 @@ class AnnouncementModel extends ChangeNotifier {
         if (resp.success) {
           announcementList = resp.data;
         }
+        return;
       });
     });
   }
@@ -69,7 +80,19 @@ class AnnouncementModel extends ChangeNotifier {
     return announcements[index].noticeTitle;
   }
 
-  Color bannerColor(int index) {
-    return colors[announcements[index].noticeType % (colors.length)];
+  Gradient bannerColor(int index) {
+    var colorIndex = (announcements[index].noticeType) % (colors.length ~/ 2);
+    var colorIndexSecond =
+        (colorIndex + 1) >= colors.length ? 0 : (colorIndex + 1);
+    return LinearGradient(
+      colors: [
+        colors[colorIndex].withAlpha(0xaa),
+        colors[colorIndexSecond].withAlpha(0xaa),
+      ],
+    );
+  }
+
+  static AnnouncementModel of(BuildContext context) {
+    return Provider.of<AnnouncementModel>(context, listen: false);
   }
 }

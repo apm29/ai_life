@@ -22,12 +22,12 @@ class BaseResp<T> {
 
   @override
   String toString() {
-    StringBuffer sb = new StringBuffer('{');
+    StringBuffer sb = new StringBuffer('{\r\n');
     sb.write("\"status\":\"$status\"");
-    sb.write(",\"token\":$token");
-    sb.write(",\"text\":\"$text\"");
-    sb.write(",\"data\":\"$data\"");
-    sb.write('}');
+    sb.write(",\r\n\"token\":$token");
+    sb.write(",\r\n\"text\":\"$text\"");
+    sb.write(",\r\n\"data\":\"$data\"");
+    sb.write('\r\n}');
     return sb.toString();
   }
 

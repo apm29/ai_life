@@ -10,4 +10,9 @@ class MainIndexModel extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  static MainIndexModel of(BuildContext context) {
+    return Provider.of<MainIndexModel>(context, listen: false);
+  }
+
 }

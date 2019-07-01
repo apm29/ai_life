@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:ai_life/configs/configs.dart';
 import 'package:ai_life/model/base_response.dart';
 import 'package:dio/dio.dart';
@@ -41,15 +39,20 @@ class DioUtil {
 
   Future<BaseResp<T>> post<T>(
     String path, {
-    JsonProcessor<T> processor,
+    @required JsonProcessor<T> processor,
     Map<String, dynamic> formData,
     CancelToken cancelToken,
     ProgressCallback onReceiveProgress,
     ProgressCallback onSendProgress,
     bool showProgress = false,
+    String loadingText,
+    bool toastMsg = false,
   }) async {
+    assert(!showProgress || loadingText != null);
+    assert(processor != null);
     processor = processor ?? (dynamic raw) => null;
     formData = formData ?? {};
+    toastMsg = toastMsg??false;
     cancelToken = cancelToken ?? CancelToken();
     onReceiveProgress = onReceiveProgress ??
         (count, total) {
@@ -61,31 +64,7 @@ class DioUtil {
         };
     ToastFuture toastFuture;
     if (showProgress) {
-      toastFuture = showToastWidget(
-        Material(
-          type: MaterialType.card,
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-          elevation: 6,
-          color: Colors.teal,
-          shadowColor: Colors.deepPurpleAccent,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                CircularProgressIndicator(backgroundColor: Colors.white,),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  path,
-                  style: TextStyle(color: Colors.white),
-                )
-              ],
-            ),
-          ),
-        ),
-      );
+      toastFuture = showLoadingWidget(loadingText);
     }
     return _dio
         .post(
@@ -113,10 +92,61 @@ class DioUtil {
       debugPrint(s.toString());
       return BaseResp.error(message: e.toString(), data: null as T);
     }).then((resp) {
-      Future.delayed(Duration(seconds: 5)).then((_) {
-        toastFuture?.dismiss();
-      });
+      //Future.delayed(Duration(seconds: 5)).then((_) {
+      //  toastFuture?.dismiss();
+      //});
+      debugPrint(
+        resp.toString()
+      );
+      if(toastMsg){
+        showToast(resp.text);
+      }
       return resp;
     });
+  }
+
+  ToastFuture showLoadingWidget(String loadingText) {
+    return showToastWidget(
+        AbsorbPointer(
+          absorbing: true,
+          child: Stack(
+            children: <Widget>[
+              ModalBarrier(
+                dismissible: false,
+                color: Color(0x33333333),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Material(
+                  type: MaterialType.card,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  elevation: 6,
+                  color: Colors.deepPurpleAccent,
+                  shadowColor: Colors.black,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                          backgroundColor: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          loadingText,
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        position: ToastPosition.center,
+        textDirection: TextDirection.ltr);
   }
 }

@@ -1,5 +1,7 @@
 import 'package:ai_life/remote/api.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'base_response.dart';
 import 'package:ai_life/persistence/const.dart';
 import 'package:oktoast/oktoast.dart';
@@ -29,6 +31,8 @@ class DistrictModel extends ChangeNotifier {
       return;
     }
     _currentDistrict = newValue;
+    sp.setInt(
+        KEY_CURRENT_DISTRICT_INDEX, _allDistrictList.indexOf(_currentDistrict));
     if (old != null)
       showToast("切换小区成功 ${_currentDistrict.districtName}",
           dismissOtherToast: true);
@@ -36,10 +40,10 @@ class DistrictModel extends ChangeNotifier {
   }
 
   DistrictModel() {
-    tryGetCurrentDistricts();
+    tryFetchCurrentDistricts();
   }
 
-  Future tryGetCurrentDistricts() async {
+  Future tryFetchCurrentDistricts() async {
     return Api.getCurrentDistricts().then((resp) {
       if (resp.success) {
         allDistricts = resp.data;
@@ -68,5 +72,9 @@ class DistrictModel extends ChangeNotifier {
 
   int getCurrentDistrictIndex() {
     return allDistricts.indexOf(currentDistrict);
+  }
+
+  static DistrictModel of(BuildContext context) {
+    return Provider.of<DistrictModel>(context, listen: false);
   }
 }

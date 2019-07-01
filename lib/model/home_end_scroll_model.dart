@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeEndScrollModel extends ChangeNotifier{
 
@@ -13,6 +14,12 @@ class HomeEndScrollModel extends ChangeNotifier{
   }
 
   bool get atHomeEnd => _atHomeEnd;
+
+
+
+  static HomeEndScrollModel of(BuildContext context) {
+    return Provider.of<HomeEndScrollModel>(context, listen: false);
+  }
 
 
 }
