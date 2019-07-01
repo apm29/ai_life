@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'model/announcement_model.dart';
 import 'model/district_model.dart';
 import 'model/home_end_scroll_model.dart';
+import 'model/notification_model.dart';
 import 'model/theme_model.dart';
 import 'model/user_model.dart';
 import 'persistence/const.dart';
@@ -28,13 +29,14 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider.value(value: AppThemeModel()),
           ChangeNotifierProvider.value(value: DistrictModel()),
           ChangeNotifierProvider.value(value: HomeEndScrollModel()),
+          ChangeNotifierProvider.value(value: NotificationModel()),
         ],
         child: Consumer<AppThemeModel>(
           builder: (context, model, child) {
             return MaterialApp(
               title: APP_NAME,
               theme: model.appTheme,
-              debugShowCheckedModeBanner: APP_DEBUG,
+              debugShowCheckedModeBanner: false,
               routes: {
                 "/": (context) {
                   return MainPage();

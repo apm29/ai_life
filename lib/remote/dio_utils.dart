@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ai_life/persistence/const.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 
 typedef JsonProcessor<T> = T Function(dynamic json);
 
@@ -45,6 +46,7 @@ class DioUtil {
     CancelToken cancelToken,
     ProgressCallback onReceiveProgress,
     ProgressCallback onSendProgress,
+    bool showProgress = false,
   }) async {
     processor = processor ?? (dynamic raw) => null;
     formData = formData ?? {};
@@ -57,6 +59,34 @@ class DioUtil {
         (count, total) {
           ///默认发送进度
         };
+    ToastFuture toastFuture;
+    if (showProgress) {
+      toastFuture = showToastWidget(
+        Material(
+          type: MaterialType.card,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          elevation: 6,
+          color: Colors.teal,
+          shadowColor: Colors.deepPurpleAccent,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CircularProgressIndicator(backgroundColor: Colors.white,),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  path,
+                  style: TextStyle(color: Colors.white),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     return _dio
         .post(
       path,
@@ -81,8 +111,12 @@ class DioUtil {
     }).catchError((e, StackTrace s) {
       debugPrint(e.toString());
       debugPrint(s.toString());
-      return BaseResp.error(message: e.toString(),data: null as T) ;
+      return BaseResp.error(message: e.toString(), data: null as T);
+    }).then((resp) {
+      Future.delayed(Duration(seconds: 5)).then((_) {
+        toastFuture?.dismiss();
+      });
+      return resp;
     });
-
   }
 }

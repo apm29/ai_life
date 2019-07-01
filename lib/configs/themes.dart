@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
-const APP_DEFAULT_DECO = BoxDecoration(gradient: LinearGradient(
+const APP_DEFAULT_DECO = BoxDecoration(
+    gradient: LinearGradient(
   stops: [0.1, 0.9],
-  colors: [Colors.purple, Colors.lightBlue],));
+  colors: [Colors.purple, Colors.lightBlue],
+));
 
-ImageLoadingBuilder APP_DEFAULT_LOADING_BUILDER = (BuildContext context, Widget child,ImageChunkEvent chunk) {
-  if (chunk == null)
+final ImageLoadingBuilder APP_DEFAULT_LOADING_BUILDER =
+    (BuildContext context, Widget child, ImageChunkEvent chunk) {
+  if (chunk == null) {
     return child;
-  else
+  } else {
+    var percent = chunk.cumulativeBytesLoaded / chunk.expectedTotalBytes;
+    var stop = (percent+0.5).clamp(0.5, 1.0);
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Colors.purple,
-            Colors.lightBlue
-          ],
-          stops: [
-            chunk.cumulativeBytesLoaded /
-                chunk.expectedTotalBytes,
-            0.95
-          ],
+          colors: [ Colors.lightBlue,Colors.purple,],
+          stops: [percent, stop],
         ),
       ),
     );
+  }
 };

@@ -1,3 +1,4 @@
+import 'package:ai_life/model/notification_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
@@ -14,7 +15,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
@@ -39,9 +39,47 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             currentIndex: value.currentIndex,
             items: [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.home), title: Text("主页")),
+                icon: Stack(
+                  children: <Widget>[
+                    Align(child: Icon(Icons.home)),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Transform.translate(
+                        child: Text(""),
+                        offset: Offset(5, -5),
+                      ),
+                    )
+                  ],
+                ),
+                title: Text("主页"),
+              ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.person), title: Text("我的"))
+                icon: Stack(
+                  children: <Widget>[
+                    Align(child: Icon(Icons.person)),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Transform.translate(
+                        child: Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.red),
+                          child: Consumer<NotificationModel>(
+                            builder: (BuildContext context, value, Widget child) {
+                              return  Text(
+                                value.unreadNotificationCountText,
+                                style: TextStyle(color: Colors.white),
+                              );
+                            },
+                          ),
+                        ),
+                        offset: Offset(12, -12),
+                      ),
+                    )
+                  ],
+                ),
+                title: Text("我的"),
+              )
             ],
             onTap: (index) {
               value.currentIndex = index;

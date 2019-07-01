@@ -22,13 +22,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('main build');
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
           var model = Provider.of<HomeEndScrollModel>(context, listen: false);
           model.atHomeEnd = notification.metrics.maxScrollExtent <=
-              notification.metrics.pixels;
+              (notification.metrics.pixels +
+                  MediaQuery.of(context).size.height * 0.4);
           return false;
         },
         child: CustomScrollView(
@@ -44,7 +44,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             SliverAppBar(
-              expandedHeight: MediaQuery.of(context).viewInsets.top,
               floating: true,
               forceElevated: true,
               snap: true,
@@ -57,7 +56,9 @@ class _HomePageState extends State<HomePage> {
               actions: <Widget>[LocationSwitchWidget()],
             ),
             SliverToBoxAdapter(
-              child: const HomeBannerWidget(key: PageStorageKey(11),),
+              child: const HomeBannerWidget(
+                key: PageStorageKey(11),
+              ),
             ),
             Consumer<AnnouncementModel>(
               builder: (context, model, child) {
@@ -74,8 +75,7 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.all(3),
                           child: Text(
                             model.typeTitle(index),
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 12),
+                            style: TextStyle(color: Colors.white, fontSize: 12),
                             maxLines: 100,
                             textAlign: TextAlign.center,
                             softWrap: true,
@@ -95,8 +95,8 @@ class _HomePageState extends State<HomePage> {
             ),
             SliverToBoxAdapter(
               child: Consumer<AppThemeModel>(
-                builder: (BuildContext context, AppThemeModel value,
-                    Widget child) {
+                builder:
+                    (BuildContext context, AppThemeModel value, Widget child) {
                   return FlatButton(
                       onPressed: () {
                         value.changeTheme();
@@ -111,17 +111,19 @@ class _HomePageState extends State<HomePage> {
                   foregroundColor: Color(0xffffffff),
                   backgroundColor: Colors.yellow[400],
                   radius: 72,
-                  child: FlatButton.icon(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.call,
-                        color: Colors.red,
-                        size: 36,
+                  child: InkWell(
+                    onTap: () {},
+                    splashColor: Colors.deepPurpleAccent,
+                    child: Container(
+                      height: 72,
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.all(Radius.circular(72))
                       ),
-                      label: Text(
-                        "紧急呼救",
-                        style: TextStyle(color: Colors.red),
-                      )),
+                      child: Text("紧急呼叫"),
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(72)),
+                  ),
                 ),
               ),
             )
@@ -129,7 +131,8 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: Consumer<HomeEndScrollModel>(
-        builder: (BuildContext context,HomeEndScrollModel value, Widget child) {
+        builder:
+            (BuildContext context, HomeEndScrollModel value, Widget child) {
           return Offstage(
             offstage: value.atHomeEnd,
             child: FloatingActionButton(
@@ -140,7 +143,12 @@ class _HomePageState extends State<HomePage> {
                   curve: Curves.fastLinearToSlowEaseIn,
                 );
               },
-              child: Icon(Icons.call),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.elliptical(16, 12))
+              ),
+              mini: true,
+              child: Icon(Icons.call,size: 16,),
             ),
           );
         },
@@ -149,11 +157,16 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomeBannerWidget extends StatelessWidget {
+class HomeBannerWidget extends StatefulWidget {
   const HomeBannerWidget({
     Key key,
   }) : super(key: key);
 
+  @override
+  _HomeBannerWidgetState createState() => _HomeBannerWidgetState();
+}
+
+class _HomeBannerWidgetState extends State<HomeBannerWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -164,7 +177,7 @@ class HomeBannerWidget extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           }
           return Swiper.list(
-            key: ValueKey(model.getCurrentDistrictIndex()),
+            key: PageStorageKey(model.getCurrentDistrictIndex()),
             onIndexChanged: (index) {
               model.currentDistrict = model.allDistricts[index];
             },
