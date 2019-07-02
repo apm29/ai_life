@@ -11,6 +11,8 @@ import 'model/home_end_scroll_model.dart';
 import 'model/notification_model.dart';
 import 'model/theme_model.dart';
 import 'model/user_model.dart';
+import 'page/not_found_page.dart';
+import 'page/web_page.dart';
 import 'persistence/const.dart';
 
 void main() async {
@@ -45,7 +47,15 @@ class MyApp extends StatelessWidget {
               routes: {
                 "/": (context) {
                   return MainPage();
+                },
+                WebPage.routeName: (context) {
+                  return WebPage();
                 }
+              },
+              onUnknownRoute: (settings) {
+                return MaterialPageRoute(builder: (context) {
+                  return NotFoundPage(routeName: settings.name);
+                });
               },
             );
           },

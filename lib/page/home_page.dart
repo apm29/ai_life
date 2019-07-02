@@ -5,7 +5,9 @@ import 'package:ai_life/model/district_model.dart';
 import 'package:ai_life/model/home_end_scroll_model.dart';
 import 'package:ai_life/model/theme_model.dart';
 import 'package:ai_life/model/user_model.dart';
+import 'package:ai_life/page/web_page.dart';
 import 'package:ai_life/remote/api.dart';
+import 'package:ai_life/utils/utils.dart';
 import 'package:ai_life/widget/ease_icon_button.dart';
 import 'package:ai_life/widget/gradient_button.dart';
 import 'package:ai_life/widget/location_switch_widget.dart';
@@ -39,7 +41,7 @@ class _HomePageState extends State<HomePage> {
           slivers: <Widget>[
             SliverToBoxAdapter(
               child: DecoratedBox(
-                decoration: APP_DEFAULT_DECO,
+                decoration: appDeco(context),
                 child: SizedBox(
                   height: MediaQuery.of(context).padding.top,
                 ),
@@ -51,7 +53,7 @@ class _HomePageState extends State<HomePage> {
               snap: true,
               centerTitle: true,
               flexibleSpace: DecoratedBox(
-                decoration: APP_DEFAULT_DECO,
+                decoration: appDeco(context),
                 child: Container(),
               ),
               title: Text(APP_NAME),
@@ -69,17 +71,23 @@ class _HomePageState extends State<HomePage> {
                     margin: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                     child: Material(
                       shadowColor: Colors.blue[200],
-                      color: Colors.white,
                       elevation: 2,
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          EaseIconButton(
-                              0, "访客管理", () {}, CupertinoIcons.person),
-                          EaseIconButton(1, "找物业", () {}, CupertinoIcons.home),
-                          EaseIconButton(2, "找社区", () {}, CupertinoIcons.group),
-                          EaseIconButton(3, "找警察", () {}, CupertinoIcons.flag),
+                          EaseIconButton(0, "访客管理", () {
+                            toWeb(context, "fkgl");
+                          }, CupertinoIcons.person_solid),
+                          EaseIconButton(1, "找物业", () {
+                            toWeb(context, "zwy");
+                          }, CupertinoIcons.padlock_solid),
+                          EaseIconButton(2, "找社区", () {
+                            toWeb(context, "zsq");
+                          }, CupertinoIcons.group_solid),
+                          EaseIconButton(3, "找警察", () {
+                            toWeb(context, "zjc");
+                          }, CupertinoIcons.phone_solid),
                         ],
                       ),
                     ),
@@ -189,7 +197,13 @@ class _HomePageState extends State<HomePage> {
         shadowColor: Colors.blue[200],
         elevation: 2,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Map<String, String> map = {
+              "url":
+                  "$BaseUrl#/contentDetails?contentId=${model.announcements[index].noticeId}"
+            };
+            Navigator.of(context).pushNamed(WebPage.routeName, arguments: map);
+          },
           child: Row(
             children: <Widget>[
               SizedBox(

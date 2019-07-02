@@ -199,6 +199,12 @@ class DistrictDetail {
     orderNo = json['orderNo'];
   }
 
+
+  @override
+  String toString() {
+    return 'DistrictDetail{districtId: $districtId, districtName: $districtName, districtInfo: $districtInfo, districtAddr: $districtAddr, districtPic: $districtPic, orderNo: $orderNo}';
+  }
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['districtId'] = this.districtId;
@@ -207,6 +213,64 @@ class DistrictDetail {
     data['districtAddr'] = this.districtAddr;
     data['districtPic'] = this.districtPic;
     data['orderNo'] = this.orderNo;
+    return data;
+  }
+}
+
+
+
+class Index {
+  String area;
+  List<MenuItem> menu;
+
+  @override
+  String toString() {
+    return '{"area":"$area","menu":[${menu.join(",")}]}';
+  }
+
+  Index.fromJson(Map<String, dynamic> json) {
+    this.area = json['area'];
+    if (json['menu'] != null) {
+      menu = new List<MenuItem>();
+      json['menu'].forEach((v) {
+        menu.add(new MenuItem.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['area'] = this.area;
+    if (this.menu != null) {
+      data['menu'] = this.menu.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class MenuItem {
+  String id;
+  String remark;
+  String url;
+
+  MenuItem(this.id, this.remark, this.url);
+
+  @override
+  String toString() {
+    return '{"id":"$id","remark":"$remark","url":"$url"}';
+  }
+
+  MenuItem.fromJson(Map<String, dynamic> json) {
+    this.id = json['id'];
+    this.remark = json['remark'];
+    this.url = json['url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['remark'] = this.remark;
+    data['url'] = this.url;
     return data;
   }
 }

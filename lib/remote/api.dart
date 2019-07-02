@@ -5,11 +5,20 @@ import 'dio_utils.dart';
 class Api {
   static Future<BaseResp<UserInfoWrapper>> login() async {
     return DioUtil().post("/permission/login",
-        formData: {"userName": "apm", "password": "123456"},
+        formData: {"userName": "yjw", "password": "123456"},
         onSendProgress: (count, total) {},
         onReceiveProgress: (count, total) {}, processor: (s) {
       return UserInfoWrapper.fromJson(s);
     }, showProgress: true,loadingText: "正在登陆..",);
+  }
+
+  static Future<BaseResp<UserInfoWrapper>> loginByUserName(String userName,String password ) async {
+    return DioUtil().post("/permission/login",
+      formData: {"userName": userName, "password": password},
+      onSendProgress: (count, total) {},
+      onReceiveProgress: (count, total) {}, processor: (s) {
+        return UserInfoWrapper.fromJson(s);
+      }, showProgress: true,loadingText: "正在登陆..",);
   }
 
   static Future<BaseResp<List<AnnouncementType>>> getAnnounceTypes() async {
@@ -46,5 +55,9 @@ class Api {
       }
       return [];
     });
+  }
+
+  static Future<List<Index>> getIndexMenu(){
+    return DioUtil().getMenu();
   }
 }

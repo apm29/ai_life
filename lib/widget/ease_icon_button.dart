@@ -24,7 +24,7 @@ class EaseIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onPressed??(){},
       splashColor: colorList[index + 1],
       borderRadius: BorderRadius.horizontal(left: Radius.circular(100),right: Radius.circular(100)),
       child: Container(

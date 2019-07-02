@@ -2,17 +2,22 @@ import 'package:ai_life/configs/configs.dart';
 import 'package:ai_life/configs/themes.dart';
 import 'package:ai_life/model/user_model.dart';
 import 'package:ai_life/remote/api.dart';
+import 'package:ai_life/utils/utils.dart';
 import 'package:ai_life/widget/ease_icon_button.dart';
 import 'package:ai_life/widget/gradient_button.dart';
 import 'package:ai_life/widget/location_switch_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../index.dart';
+import 'login_page.dart';
 
 class MinePage extends StatefulWidget {
   @override
   _MinePageState createState() => _MinePageState();
 }
+
+const kAvatarRadius = 45.0;
+const kMarginTop = 15.0;
 
 class _MinePageState extends State<MinePage> {
   @override
@@ -24,11 +29,12 @@ class _MinePageState extends State<MinePage> {
             child: buildLoginButton(userModel),
           );
         }
+
         return CustomScrollView(
           slivers: <Widget>[
             SliverToBoxAdapter(
               child: DecoratedBox(
-                decoration: APP_DEFAULT_DECO,
+                decoration: appDeco(context),
                 child: SizedBox(
                   height: MediaQuery.of(context).padding.top,
                 ),
@@ -39,7 +45,7 @@ class _MinePageState extends State<MinePage> {
                 alignment: Alignment.topCenter,
                 children: <Widget>[
                   DecoratedBox(
-                    decoration: APP_DEFAULT_DECO,
+                    decoration: appDeco(context),
                     child: Container(
                       height: 100,
                     ),
@@ -49,7 +55,8 @@ class _MinePageState extends State<MinePage> {
                     child: LocationSwitchWidget(),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 50, left: 16, right: 16),
+                    margin: EdgeInsets.only(
+                        top: kAvatarRadius + kMarginTop, left: 16, right: 16),
                     child: Material(
                       type: MaterialType.card,
                       borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -61,7 +68,7 @@ class _MinePageState extends State<MinePage> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             SizedBox(
-                              height: 30,
+                              height: kAvatarRadius + 5,
                             ),
                             Text(userModel.userName),
                             SizedBox(
@@ -82,7 +89,7 @@ class _MinePageState extends State<MinePage> {
                                       width: 4,
                                     ),
                                     Text(
-                                      value.currentDistrict.districtName,
+                                      value.currentDistrict?.districtName,
                                       style: TextStyle(
                                           color: Colors.blueGrey, fontSize: 12),
                                       overflow: TextOverflow.ellipsis,
@@ -101,19 +108,25 @@ class _MinePageState extends State<MinePage> {
                                 EaseIconButton(
                                   0,
                                   "我的房屋",
-                                  () {},
+                                  () {
+                                    toWeb(context, "wdfw");
+                                  },
                                   Icons.home,
                                 ),
                                 EaseIconButton(
                                   1,
-                                  "家庭成员",
-                                  () {},
+                                  "住所成员",
+                                  () {
+                                    toWeb(context, "zscy");
+                                  },
                                   Icons.people,
                                 ),
                                 EaseIconButton(
                                   2,
                                   "我的爱车",
-                                  () {},
+                                  () {
+                                    toWeb(context, "wdac");
+                                  },
                                   Icons.airport_shuttle,
                                 ),
                               ],
@@ -125,10 +138,29 @@ class _MinePageState extends State<MinePage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 25),
+                    margin: EdgeInsets.only(top: kMarginTop),
                     child: SizedBox(
-                      child: CircleAvatar(),
-                      height: 50,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
+                        child: Container(
+                          margin: EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                                Theme.of(context).colorScheme.secondaryVariant,
+                          ),
+                          child: ClipOval(
+                              child: Image.network(
+                            "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3096258911,4221169312&fm=26&gp=0.jpg",
+                            fit: BoxFit.cover,
+                          )),
+                        ),
+                      ),
+                      height: kAvatarRadius * 2,
+                      width: kAvatarRadius * 2,
                     ),
                   ),
                 ],
@@ -154,12 +186,11 @@ class _MinePageState extends State<MinePage> {
       onPressed: () async {
         return value.isLogin
             ? value.logout()
-            : Api.login().then((resp) {
-                if (resp.success) {
-                  value.login(resp.data?.userInfo, resp.token);
-                }
-                return;
-              });
+            : Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => LoginPage(),
+                ),
+              );
       },
     );
   }

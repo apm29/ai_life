@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ai_life/configs/configs.dart';
 import 'package:ai_life/model/base_response.dart';
 import 'package:dio/dio.dart';
@@ -13,6 +15,8 @@ class DioUtil {
     init();
   }
 
+  static bool proxyHttp = false;
+  static bool printLog = false;
   static DioUtil _instance;
 
   static DioUtil getInstance() {
@@ -35,6 +39,64 @@ class DioUtil {
       receiveTimeout: 20000,
       baseUrl: BaseUrl,
     ));
+    //设置代理
+    if (proxyHttp)
+      (_dio.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (client) {
+        // config the http client
+        client.findProxy = (uri) {
+          //proxy all request to localhost:8888
+          return "PROXY 192.168.1.181:8888";
+        };
+        // you can also create a new HttpClient to dio
+        // return new HttpClient();
+      };
+    if (printLog)
+      _dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (req) {
+            debugPrint("REQUEST:");
+            debugPrint("===========================================");
+            debugPrint("  Method:${req.method},Url:${req.baseUrl + req.path}");
+            debugPrint("  Headers:${req.headers}");
+            debugPrint("  QueryParams:${req.queryParameters}");
+            print('=======>${req.data.runtimeType}');
+            if (req.data.runtimeType != FormData) {
+              debugPrint("    Data:${req.data}");
+            }
+
+            debugPrint("===========================================");
+          },
+          onResponse: (resp) {
+            debugPrint("REQUEST:");
+            debugPrint("===========================================");
+            debugPrint(
+                "  Method:${resp.request.method},Url:${resp.request.baseUrl + resp.request.path}");
+            debugPrint("  Headers:${resp.request.headers}");
+            debugPrint("  QueryParams:${resp.request.queryParameters}");
+            if (resp.request.data.runtimeType != FormData) {
+              debugPrint("  Data:${resp.request.data}");
+            }
+            debugPrint("  -------------------------");
+            debugPrint("  RESULT:");
+            debugPrint("    Headers:${resp.headers}");
+            debugPrint("  Data:${resp.data}");
+            debugPrint("    Redirect:${resp.redirects}");
+            debugPrint("    StatusCode:${resp.statusCode}");
+            debugPrint("    Extras:${resp.extra}");
+            debugPrint(" ===========================================");
+          },
+          onError: (err) {
+            debugPrint("ERROR:");
+            debugPrint("===========================================");
+            debugPrint("Message:${err.message}");
+            debugPrint("Error:${err.error}");
+            debugPrint("Type:${err.type}");
+            debugPrint("Trace:${err.stackTrace}");
+            debugPrint("===========================================");
+          },
+        ),
+      );
   }
 
   Future<BaseResp<T>> post<T>(
@@ -62,6 +124,7 @@ class DioUtil {
         (count, total) {
           ///默认发送进度
         };
+    print('$path');
     ToastFuture toastFuture;
     if (showProgress) {
       toastFuture = showLoadingWidget(loadingText);
@@ -93,7 +156,7 @@ class DioUtil {
       return BaseResp.error(message: e.toString(), data: null as T);
     }).then((resp) {
       toastFuture?.dismiss();
-      debugPrint(resp.toString());
+      //debugPrint(resp.toString());
       if (toastMsg) {
         showToast(resp.text);
       }
@@ -145,5 +208,25 @@ class DioUtil {
         position: ToastPosition.center,
         textDirection: TextDirection.ltr,
         duration: Duration(seconds: 100));
+  }
+
+  Future<List<Index>> getMenu() async {
+    List<Index> res = [];
+    try {
+      Response<String> response = await _dio.get<String>(
+        "/axj_menu.json",
+      );
+      if (response.statusCode == 200) {
+        var jsonString = response.data;
+        List list = json.decode(jsonString);
+        var indexList = list.map((d) {
+          return Index.fromJson(d);
+        }).toList();
+        res.addAll(indexList);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return res;
   }
 }

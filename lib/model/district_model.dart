@@ -49,8 +49,11 @@ class DistrictModel extends ChangeNotifier {
         allDistricts = resp.data;
       }
       var index = sp.getInt(KEY_CURRENT_DISTRICT_INDEX) ?? 0;
-      if (_allDistrictList.length > index)
+      if (_allDistrictList.length > index) {
         currentDistrict = _allDistrictList[index];
+      }else if(_allDistrictList.length > 1){
+        currentDistrict = _allDistrictList[0];
+      }
       return;
     });
   }

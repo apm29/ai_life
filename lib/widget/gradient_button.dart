@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 
 typedef PressCallback = Future<void> Function();
 
-const Gradient _kDefaultGradient = const LinearGradient(
-  colors: [Colors.purple, Colors.lightBlue],
-);
-
 class GradientButton extends StatefulWidget {
   final Widget child;
   final Gradient gradient;
@@ -15,7 +11,7 @@ class GradientButton extends StatefulWidget {
 
   GradientButton(
     this.child, {
-    this.gradient = _kDefaultGradient,
+    this.gradient,
     @required this.onPressed,
   }) : assert(onPressed != null);
 
@@ -25,19 +21,27 @@ class GradientButton extends StatefulWidget {
 
 class _GradientButtonState extends State<GradientButton> {
   bool _loading = false;
-  final int _kDelayMilli = 1000;
+  final int _kDelayMilli = 600;
   Timer delayCancelTimer;
+
   @override
   void dispose() {
     super.dispose();
     delayCancelTimer?.cancel();
   }
+
   @override
   Widget build(BuildContext context) {
+    Gradient _kDefaultGradient = LinearGradient(
+      colors: [
+        Theme.of(context).colorScheme.secondary,
+        Theme.of(context).colorScheme.primary,
+      ],
+    );
     return UnconstrainedBox(
       child: Container(
           decoration: BoxDecoration(
-              gradient: widget.gradient,
+              gradient: widget.gradient ?? _kDefaultGradient,
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey[500],
@@ -57,7 +61,8 @@ class _GradientButtonState extends State<GradientButton> {
                         }
                         startLoading();
                         return widget.onPressed.call().then((_) {
-                          delayCancelTimer =Timer(Duration(milliseconds: _kDelayMilli ), (){
+                          delayCancelTimer =
+                              Timer(Duration(milliseconds: _kDelayMilli), () {
                             stopLoading();
                           });
                         }).catchError((e) {

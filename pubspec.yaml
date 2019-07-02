@@ -34,6 +34,9 @@ dependencies:
 
   oktoast: ^2.1.9
 
+  webview_flutter: ^0.3.5+3
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
