@@ -67,20 +67,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: SoukouMincho
-       fonts:
-         - asset: font/SoukouMincho.ttf
-     - family: Quanzhen
-       fonts:
-         - asset: font/quanzhen.ttf
-           weight: 700
      - family: Determination
        fonts:
          - asset: font/determination.otf
-           weight: 700
-     - family: Baizhou
-       fonts:
-         - asset: font/235h-1.ttf
            weight: 700
      - family: Weiruanyahei
        fonts:

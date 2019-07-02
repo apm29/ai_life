@@ -64,15 +64,26 @@ class _HomePageState extends State<HomePage> {
             ),
             Consumer<UserModel>(
               builder: (BuildContext context, UserModel value, Widget child) {
-                return SliverGrid.count(
-                  childAspectRatio: 0.88,
-                  crossAxisCount: 4,
-                  children: <Widget>[
-                    EaseIconButton(0, "访客管理", () {}, CupertinoIcons.person),
-                    EaseIconButton(1, "找物业", () {}, CupertinoIcons.home),
-                    EaseIconButton(2, "找社区", () {}, CupertinoIcons.group),
-                    EaseIconButton(3, "找警察", () {}, CupertinoIcons.flag),
-                  ],
+                return SliverToBoxAdapter(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                    child: Material(
+                      shadowColor: Colors.blue[200],
+                      color: Colors.white,
+                      elevation: 2,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          EaseIconButton(
+                              0, "访客管理", () {}, CupertinoIcons.person),
+                          EaseIconButton(1, "找物业", () {}, CupertinoIcons.home),
+                          EaseIconButton(2, "找社区", () {}, CupertinoIcons.group),
+                          EaseIconButton(3, "找警察", () {}, CupertinoIcons.flag),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
@@ -90,30 +101,9 @@ class _HomePageState extends State<HomePage> {
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      return ListTile(
-                        leading: Container(
-                          constraints: BoxConstraints(minWidth: 72),
-                          padding: EdgeInsets.all(3),
-                          child: Text(
-                            model.typeTitle(index),
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                            maxLines: 100,
-                            textAlign: TextAlign.center,
-                            softWrap: true,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: model.bannerColor(index),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(72),
-                            ),
-                          ),
-                        ),
-                        title: Text(model.title(index),style: TextStyle(
-                          color: Colors.blueGrey[800],fontSize: 14
-                        ),),
-                      );
+                      return buildAnnouncementTile(model, index);
                     },
-                    childCount: model.announcements?.length??0,
+                    childCount: model.announcements?.length ?? 0,
                   ),
                 );
               },
@@ -172,7 +162,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 _scrollController.animateTo(
                   _scrollController.position.maxScrollExtent,
-                  duration: Duration(seconds: 1),
+                  duration: Duration(seconds: 2),
                   curve: Curves.fastLinearToSlowEaseIn,
                 );
               },
@@ -187,6 +177,56 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget buildAnnouncementTile(AnnouncementModel model, int index) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 6),
+      constraints: BoxConstraints(minHeight: 56),
+      child: Material(
+        shadowColor: Colors.blue[200],
+        elevation: 2,
+        child: InkWell(
+          onTap: () {},
+          child: Row(
+            children: <Widget>[
+              SizedBox(
+                width: 16,
+              ),
+              Container(
+                constraints: BoxConstraints(minWidth: 72),
+                padding: EdgeInsets.all(3),
+                child: Text(
+                  model.typeTitle(index),
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                  maxLines: 100,
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                ),
+                decoration: BoxDecoration(
+                  gradient: model.bannerColor(index),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(72),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 6,
+              ),
+              Expanded(
+                child: Text(
+                  model.title(index),
+                  style: TextStyle(color: Colors.blueGrey[800], fontSize: 14),
+                ),
+              ),
+              SizedBox(
+                width: 12,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

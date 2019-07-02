@@ -1,3 +1,4 @@
+import 'dart:async';
 
 import 'package:oktoast/oktoast.dart';
 
@@ -14,7 +15,11 @@ import 'persistence/const.dart';
 
 void main() async {
   sp = await SharedPreferences.getInstance();
-  runApp(MyApp());
+  runZoned(() {
+    runApp(MyApp());
+  }, onError: (e) {
+    debugPrint(e.toString());
+  });
 }
 
 class MyApp extends StatelessWidget {

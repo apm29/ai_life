@@ -52,7 +52,7 @@ class DioUtil {
     assert(processor != null);
     processor = processor ?? (dynamic raw) => null;
     formData = formData ?? {};
-    toastMsg = toastMsg??false;
+    toastMsg = toastMsg ?? false;
     cancelToken = cancelToken ?? CancelToken();
     onReceiveProgress = onReceiveProgress ??
         (count, total) {
@@ -92,13 +92,9 @@ class DioUtil {
       debugPrint(s.toString());
       return BaseResp.error(message: e.toString(), data: null as T);
     }).then((resp) {
-      //Future.delayed(Duration(seconds: 5)).then((_) {
-      //  toastFuture?.dismiss();
-      //});
-      debugPrint(
-        resp.toString()
-      );
-      if(toastMsg){
+      toastFuture?.dismiss();
+      debugPrint(resp.toString());
+      if (toastMsg) {
         showToast(resp.text);
       }
       return resp;
@@ -147,6 +143,7 @@ class DioUtil {
           ),
         ),
         position: ToastPosition.center,
-        textDirection: TextDirection.ltr);
+        textDirection: TextDirection.ltr,
+        duration: Duration(seconds: 100));
   }
 }

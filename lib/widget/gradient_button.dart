@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 typedef PressCallback = Future<void> Function();
@@ -24,7 +26,12 @@ class GradientButton extends StatefulWidget {
 class _GradientButtonState extends State<GradientButton> {
   bool _loading = false;
   final int _kDelayMilli = 1000;
-
+  Timer delayCancelTimer;
+  @override
+  void dispose() {
+    super.dispose();
+    delayCancelTimer?.cancel();
+  }
   @override
   Widget build(BuildContext context) {
     return UnconstrainedBox(
@@ -50,8 +57,7 @@ class _GradientButtonState extends State<GradientButton> {
                         }
                         startLoading();
                         return widget.onPressed.call().then((_) {
-                          Future.delayed(Duration(milliseconds: _kDelayMilli))
-                              .then((_) {
+                          delayCancelTimer =Timer(Duration(milliseconds: _kDelayMilli ), (){
                             stopLoading();
                           });
                         }).catchError((e) {
