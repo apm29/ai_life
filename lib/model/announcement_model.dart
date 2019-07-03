@@ -81,13 +81,11 @@ class AnnouncementModel extends ChangeNotifier {
   }
 
   Gradient bannerColor(int index) {
-    var colorIndex = (announcements[index].noticeType) % (colors.length ~/ 2);
-    var colorIndexSecond =
-        (colorIndex + 1) >= colors.length ? 0 : (colorIndex + 1);
+    var colorIndex = (announcements[index].noticeType);
     return LinearGradient(
       colors: [
-        colors[colorIndex].withAlpha(0xaa),
-        colors[colorIndexSecond].withAlpha(0xaa),
+        colors[colorIndex].withAlpha(0xff),
+        colors[colorIndex].withAlpha(0xa1),
       ],
     );
   }

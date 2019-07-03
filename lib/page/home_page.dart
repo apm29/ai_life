@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ai_life/configs/configs.dart';
 import 'package:ai_life/configs/themes.dart';
 import 'package:ai_life/model/announcement_model.dart';
@@ -9,6 +11,7 @@ import 'package:ai_life/page/web_page.dart';
 import 'package:ai_life/remote/api.dart';
 import 'package:ai_life/utils/utils.dart';
 import 'package:ai_life/widget/ease_icon_button.dart';
+import 'package:ai_life/widget/ease_widget.dart';
 import 'package:ai_life/widget/gradient_button.dart';
 import 'package:ai_life/widget/location_switch_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,6 +54,7 @@ class _HomePageState extends State<HomePage> {
               floating: true,
               forceElevated: true,
               snap: true,
+              pinned: true,
               centerTitle: true,
               flexibleSpace: DecoratedBox(
                 decoration: appDeco(context),
@@ -68,6 +72,7 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context, UserModel value, Widget child) {
                 return SliverToBoxAdapter(
                   child: Container(
+                    color: Colors.white,
                     margin: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                     child: Material(
                       shadowColor: Colors.blue[200],
@@ -77,16 +82,16 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           EaseIconButton(0, "访客管理", () {
-                            toWeb(context, "fkgl");
+                            toWebPage(context, "fkgl");
                           }, CupertinoIcons.person_solid),
                           EaseIconButton(1, "找物业", () {
-                            toWeb(context, "zwy");
+                            toWebPage(context, "zwy");
                           }, CupertinoIcons.padlock_solid),
                           EaseIconButton(2, "找社区", () {
-                            toWeb(context, "zsq");
+                            toWebPage(context, "zsq");
                           }, CupertinoIcons.group_solid),
                           EaseIconButton(3, "找警察", () {
-                            toWeb(context, "zjc");
+                            toWebPage(context, "zjc");
                           }, CupertinoIcons.phone_solid),
                         ],
                       ),
@@ -117,21 +122,132 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             SliverToBoxAdapter(
-              child: Consumer<AppThemeModel>(
-                builder:
-                    (BuildContext context, AppThemeModel value, Widget child) {
-                  return FlatButton(
-                      onPressed: () {
-                        value.changeTheme();
-                      },
-                      child: Icon(Icons.cached));
-                },
+              child: EaseTitle(
+                title: "智慧物业",
+                subtitle: "Intelligent Property",
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: EaseTitleWrap(
+                children: <Widget>[
+                  EaseChip(
+                    text: "通知通告",
+                    onPressed: () => toWebPage(
+                      context,
+                      "tztg",
+                      checkFaceVerified: false,
+                      checkHasHouse: false,
+                    ),
+                    index: 0,
+                  ),
+                  EaseChip(
+                    text: "访客系统",
+                    onPressed: () => toWebPage(context, "fkxt"),
+                    index: 1,
+                  ),
+                  EaseChip(
+                    text: "车辆管理",
+                    onPressed: () => toWebPage(context, "clgl"),
+                    index: 2,
+                  ),
+                  EaseChip(
+                    text: "维护保修",
+                    onPressed: () => toWebPage(context, "whbx"),
+                    index: 0,
+                  ),
+                ],
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: EaseTitle(
+                title: "安全管家",
+                subtitle: "Security Manager",
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: EaseTitleWrap(
+                children: <Widget>[
+                  EaseChip(
+                    text: "警务查询",
+                    onPressed: () => toWebPage(
+                      context,
+                      "jwcx",
+                      checkFaceVerified: false,
+                      checkHasHouse: false,
+                    ),
+                    index: 0,
+                  ),
+                  EaseChip(
+                    text: "巡更管理",
+                    onPressed: () => toWebPage(
+                      context,
+                      "xggl",
+                      checkFaceVerified: false,
+                      checkHasHouse: false,
+                    ),
+                    index: 1,
+                  ),
+                ],
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: EaseTitle(
+                title: "共建共享",
+                subtitle: "Co-Construction & Share",
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: EaseTitleWrap(
+                children: <Widget>[
+                  EaseChip(
+                    text: "功德栏",
+                    onPressed: () => toWebPage(
+                      context,
+                      "gdl",
+                      checkFaceVerified: false,
+                      checkHasHouse: false,
+                    ),
+                    index: 0,
+                  ),
+                  EaseChip(
+                    text: "义警活动",
+                    onPressed: () => toWebPage(
+                      context,
+                      "yjhd",
+                      checkFaceVerified: false,
+                      checkHasHouse: false,
+                    ),
+                    index: 1,
+                  ),
+                  EaseChip(
+                    text: "慈善公益",
+                    onPressed: () => toWebPage(
+                      context,
+                      "csgy",
+                      checkFaceVerified: false,
+                      checkHasHouse: false,
+                    ),
+                    index: 2,
+                  ),
+                  EaseChip(
+                    text: "小区活动",
+                    onPressed: () => toWebPage(
+                      context,
+                      "xqhd",
+                      checkFaceVerified: false,
+                      checkHasHouse: false,
+                    ),
+                    index: 0,
+                  ),
+                ],
               ),
             ),
             SliverFillRemaining(
               child: Center(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).pushNamed("/emergencyCall");
+                  },
                   splashColor: Colors.lightGreen,
                   child: Container(
                     constraints: BoxConstraints.tight(Size(120, 120)),
@@ -164,24 +280,27 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: Consumer<HomeEndScrollModel>(
         builder:
             (BuildContext context, HomeEndScrollModel value, Widget child) {
-          return Offstage(
-            offstage: value.atHomeEnd,
-            child: FloatingActionButton(
-              onPressed: () {
-                _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent,
-                  duration: Duration(seconds: 2),
-                  curve: Curves.fastLinearToSlowEaseIn,
-                );
-              },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.elliptical(16, 12))),
-              mini: true,
-              child: Icon(
-                Icons.call,
-                size: 16,
-              ),
+          return FloatingActionButton(
+            onPressed: () {
+              value.atHomeEnd
+                  ? _scrollController.animateTo(
+                      _scrollController.position.minScrollExtent,
+                      duration: Duration(seconds: 2),
+                      curve: Curves.fastLinearToSlowEaseIn,
+                    )
+                  : _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      duration: Duration(seconds: 2),
+                      curve: Curves.fastLinearToSlowEaseIn,
+                    );
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.elliptical(16, 12))),
+            mini: true,
+            child: Icon(
+              value.atHomeEnd ? Icons.arrow_upward : Icons.call,
+              size: 16,
             ),
           );
         },
@@ -196,6 +315,7 @@ class _HomePageState extends State<HomePage> {
       child: Material(
         shadowColor: Colors.blue[200],
         elevation: 2,
+        color: Colors.white,
         child: InkWell(
           onTap: () {
             Map<String, String> map = {
@@ -214,7 +334,9 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.all(3),
                 child: Text(
                   model.typeTitle(index),
-                  style: TextStyle(color: Colors.white, fontSize: 12),
+                  style: Theme.of(context).textTheme.caption.copyWith(
+                        color: Colors.white,
+                      ),
                   maxLines: 100,
                   textAlign: TextAlign.center,
                   softWrap: true,
@@ -265,16 +387,16 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
           if (model.allDistricts.length < 1) {
             return Center(child: CircularProgressIndicator());
           }
-          return Swiper.list(
-            key: PageStorageKey(model.getCurrentDistrictIndex()),
+          return Swiper(
+            key: PageStorageKey(Random().nextDouble()),
             onIndexChanged: (index) {
               model.currentDistrict = model.allDistricts[index];
             },
             controller: SwiperController(),
-            control: SwiperPagination(),
-            list: model.allDistricts,
+            control: SwiperPagination(builder: SwiperPagination.dots),
             index: model.getCurrentDistrictIndex(),
-            builder: (context, data, index) {
+            itemCount: model.allDistricts.length,
+            itemBuilder: (context, index) {
               return Container(
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 6),
                 child: Stack(
@@ -286,15 +408,10 @@ class _HomeBannerWidgetState extends State<HomeBannerWidget> {
                         shadowColor: Theme.of(context).primaryColor,
                         clipBehavior: Clip.antiAlias,
                         borderRadius: BorderRadius.all(Radius.circular(12)),
-                        child: Consumer<DistrictModel>(
-                          builder: (BuildContext context, DistrictModel model,
-                              Widget child) {
-                            return Image.network(
-                              model.getDistrictPic(index),
-                              fit: BoxFit.cover,
-                              loadingBuilder: APP_DEFAULT_LOADING_BUILDER,
-                            );
-                          },
+                        child: Image.network(
+                          model.getDistrictPic(index),
+                          fit: BoxFit.cover,
+                          loadingBuilder: kAppDefaultLoadingBuilder,
                         ),
                       ),
                     ),

@@ -1,4 +1,5 @@
 import 'package:ai_life/model/notification_model.dart';
+import 'package:ai_life/model/user_verify_status_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:math' as math;
@@ -21,6 +22,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           UserModel.of(context).tryLoginWithLocalToken();
           await AnnouncementModel.of(context).tryFetchAllAnnouncement();
           await DistrictModel.of(context).tryFetchCurrentDistricts();
+          await UserVerifyStatusModel.of(context).tryFetchVerifyStatus();
           return;
         },
         child: Consumer<MainIndexModel>(
@@ -60,26 +62,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 icon: Stack(
                   children: <Widget>[
                     Align(child: Icon(Icons.person)),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Transform.translate(
-                        child: Container(
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.red),
-                          child: Consumer<NotificationModel>(
-                            builder:
-                                (BuildContext context, value, Widget child) {
-                              return Text(
-                                value.unreadNotificationCountText,
-                                style: TextStyle(color: Colors.white),
-                              );
-                            },
-                          ),
-                        ),
-                        offset: Offset(12, -12),
-                      ),
-                    )
+                    Consumer<NotificationModel>(
+                      builder: (BuildContext context, NotificationModel value,
+                          Widget child) {
+                        return value.unreadNotificationCount > 0
+                            ? Align(
+                                alignment: Alignment.center,
+                                child: Transform.translate(
+                                  child: Container(
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.red),
+                                    child: Container(),
+                                  ),
+                                  offset: Offset(8, -8),
+                                ),
+                              )
+                            : Container();
+                      },
+                    ),
                   ],
                 ),
                 title: Text("我的"),

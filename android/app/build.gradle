@@ -38,19 +38,21 @@ android {
 
 
     signingConfigs{
-
+        release{}
     }
     buildTypes {
         debug{
+            signingConfig signingConfigs.debug
             ndk{
                 abiFilters 'armeabi-v7a','x86','arm64-v8a'
             }
             manifestPlaceholders+=[
                     "appName":"安心居测试"
             ]
-            //applicationIdSuffix ".test"
+            applicationIdSuffix ".test"
         }
         release {
+            signingConfig signingConfigs.debug
             ndk{
                 abiFilters 'armeabi-v7a'//,'x86','arm64-v8a'
             }

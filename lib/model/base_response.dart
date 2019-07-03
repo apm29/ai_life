@@ -6,7 +6,7 @@ class BaseResp<T> {
 
   BaseResp(this.status, this.data, this.token, this.text);
 
-  BaseResp.error({String message = "失败",T data}) {
+  BaseResp.error({String message = "失败", T data}) {
     this.status = "0";
     this.data = null;
     this.token = null;
@@ -173,7 +173,6 @@ class Announcement {
   }
 }
 
-
 class DistrictDetail {
   int districtId;
   String districtName;
@@ -184,11 +183,11 @@ class DistrictDetail {
 
   DistrictDetail(
       {this.districtId,
-        this.districtName,
-        this.districtInfo,
-        this.districtAddr,
-        this.districtPic,
-        this.orderNo});
+      this.districtName,
+      this.districtInfo,
+      this.districtAddr,
+      this.districtPic,
+      this.orderNo});
 
   DistrictDetail.fromJson(Map<String, dynamic> json) {
     districtId = json['districtId'];
@@ -199,6 +198,25 @@ class DistrictDetail {
     orderNo = json['orderNo'];
   }
 
+  @override
+  bool operator ==(other) {
+    if (other == null || other is! DistrictDetail) {
+      return false;
+    } else if (other is DistrictDetail) {
+      return districtId == other.districtId &&
+          districtName == other.districtName &&
+          districtInfo == other.districtInfo &&
+          districtAddr == other.districtAddr &&
+          districtPic == other.districtPic &&
+          orderNo == other.orderNo;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode {
+    return super.hashCode;
+  }
 
   @override
   String toString() {
@@ -216,8 +234,6 @@ class DistrictDetail {
     return data;
   }
 }
-
-
 
 class Index {
   String area;
@@ -272,5 +288,109 @@ class MenuItem {
     data['remark'] = this.remark;
     data['url'] = this.url;
     return data;
+  }
+}
+
+class UserVerifyStatus {
+  ///
+  /// code 0 未认证
+  /// code 1 有房认证中
+  /// code 2 无房认证中
+  /// code 3 有房认证成功
+  /// code 4 无房认证成功
+  /// code 5 有房认证失败
+  /// code 6 无房认证失败
+  ///
+  int code;
+
+  UserVerifyStatus({this.code});
+
+  UserVerifyStatus.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['code'] = this.code;
+    return data;
+  }
+
+  bool hasHouse() {
+    return code == 1 || code == 3 || code == 5;
+  }
+
+  bool isVerified() {
+    return code == 3 || code == 4;
+  }
+
+  String getVerifyText() {
+    String text;
+    switch (code) {
+      case 0:
+        text = "未认证";
+        break;
+      case 1:
+        text = "认证中";
+        break;
+      case 2:
+        text = "认证中";
+        break;
+      case 3:
+        text = "已认证";
+        break;
+      case 4:
+        text = "已认证";
+        break;
+      case 5:
+        text = "认证失败";
+        break;
+      case 6:
+        text = "认证失败";
+        break;
+      default:
+        text = "--";
+        break;
+    }
+    return text;
+  }
+
+  @override
+  String toString() {
+    return '{"code": $code}';
+  }
+}
+
+
+class UserType {
+  int id;
+  String userId;
+
+  ///物业人员 1
+  ///有房认证用户 2
+  ///民警 3
+  ///无房认证用户 4
+  ///家庭成员 5
+  ///无认证用户 6
+  String roleCode;
+
+  UserType({this.id, this.userId, this.roleCode});
+
+  UserType.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['userId'];
+    roleCode = json['roleCode'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['userId'] = this.userId;
+    data['roleCode'] = this.roleCode;
+    return data;
+  }
+
+  @override
+  String toString() {
+    return 'UserType{id: $id, userId: $userId, roleCode: $roleCode}';
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:ai_life/persistence/const.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,13 +12,15 @@ class AppThemeModel extends ChangeNotifier {
         color: Colors.purple,
         size: 24,
       ),
+      accentColor: Colors.blueAccent,
       primaryColor: Colors.blue,
+      platform: TargetPlatform.iOS,
       colorScheme: ColorScheme(
-        primary: Colors.blue,
+        primary: Colors.purple,
         primaryVariant: Colors.blueAccent,
-        secondary: Colors.purple,
+        secondary: Colors.blue,
         secondaryVariant: Colors.deepPurpleAccent,
-        surface: Colors.grey[200],
+        surface: Colors.white,
         background: Colors.grey[300],
         error: Colors.red,
         onPrimary: Colors.white,
@@ -38,13 +41,13 @@ class AppThemeModel extends ChangeNotifier {
           color: Colors.black,
         ),
         title: TextStyle(
-          color: Colors.purple[200],
+          color: Colors.blue,
         ),
         subtitle: TextStyle(
-          color: Colors.purple[300],
+          color: Colors.blueGrey[900],
         ),
         subhead: TextStyle(
-          color: Colors.purple[400],
+          color: Colors.blueGrey[700],
         ),
         caption: TextStyle(
           color: Colors.grey[500],
@@ -76,6 +79,18 @@ class AppThemeModel extends ChangeNotifier {
         color: Colors.blue,
         size: 24,
       ),
+      platform: TargetPlatform.iOS,
+      accentColor: Colors.purple,
+    ),
+    ThemeData(
+      primarySwatch: Colors.teal,
+      fontFamily: "Determination",
+      iconTheme: IconThemeData(
+        color: Colors.blue,
+        size: 24,
+      ),
+      platform: TargetPlatform.iOS,
+      accentColor: Colors.blueAccent,
     ),
   ];
   int _currentThemeIndex = 0;
@@ -87,6 +102,7 @@ class AppThemeModel extends ChangeNotifier {
       return;
     }
     _currentThemeIndex = newValue;
+    sp.setInt(KEY_CURRENT_THEME_INDEX, _currentThemeIndex);
     notifyListeners();
   }
 
@@ -95,9 +111,16 @@ class AppThemeModel extends ChangeNotifier {
   void changeTheme() {
     if (currentThemeIndex == 0) {
       currentThemeIndex = 1;
+    } else if (currentThemeIndex == 1) {
+      currentThemeIndex = 2;
     } else {
       currentThemeIndex = 0;
     }
+  }
+
+  AppThemeModel() {
+    int index = sp.getInt(KEY_CURRENT_THEME_INDEX) ?? 0;
+    currentThemeIndex = index;
   }
 
   static AppThemeModel of(BuildContext context) {

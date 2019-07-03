@@ -76,16 +76,20 @@ class _LocationSwitchWidgetState extends State<LocationSwitchWidget>
                     var isSelected =
                         model.currentDistrict == model.allDistricts[index];
                     return ListTile(
-                        title: Text(model.getDistrictName(index)),
-                        subtitle: Text(model.getDistrictAddress(index)),
-                        onTap: () {
-                          model.currentDistrict = model.allDistricts[index];
-                          Navigator.of(context).pop();
-                        },
-                        selected: isSelected,
-                        leading: Icon(
+                      title: Text(model.getDistrictName(index)),
+                      subtitle: Text(model.getDistrictAddress(index)),
+                      onTap: () {
+                        model.currentDistrict = model.allDistricts[index];
+                        Navigator.of(context).pop();
+                      },
+                      selected: isSelected,
+                      leading: Visibility(
+                        visible: isSelected,
+                        child: Icon(
                           Icons.location_on,
-                        ));
+                        ),
+                      ),
+                    );
                   },
                   itemCount: model.allDistricts.length,
                 );

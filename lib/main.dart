@@ -11,6 +11,9 @@ import 'model/home_end_scroll_model.dart';
 import 'model/notification_model.dart';
 import 'model/theme_model.dart';
 import 'model/user_model.dart';
+import 'model/user_role_model.dart';
+import 'model/user_verify_status_model.dart';
+import 'page/login_page.dart';
 import 'page/not_found_page.dart';
 import 'page/web_page.dart';
 import 'persistence/const.dart';
@@ -37,6 +40,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider.value(value: DistrictModel()),
           ChangeNotifierProvider.value(value: HomeEndScrollModel()),
           ChangeNotifierProvider.value(value: NotificationModel()),
+          ChangeNotifierProvider.value(value: UserVerifyStatusModel()),
+          ChangeNotifierProvider.value(value: UserRoleModel()),
         ],
         child: Consumer<AppThemeModel>(
           builder: (context, model, child) {
@@ -50,6 +55,9 @@ class MyApp extends StatelessWidget {
                 },
                 WebPage.routeName: (context) {
                   return WebPage();
+                },
+                LoginPage.routeName:(context){
+                  return LoginPage();
                 }
               },
               onUnknownRoute: (settings) {
@@ -57,6 +65,7 @@ class MyApp extends StatelessWidget {
                   return NotFoundPage(routeName: settings.name);
                 });
               },
+              onGenerateTitle: (context) => APP_NAME,
             );
           },
         ),

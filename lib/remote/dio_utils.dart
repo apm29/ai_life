@@ -153,6 +153,9 @@ class DioUtil {
     }).catchError((e, StackTrace s) {
       debugPrint(e.toString());
       debugPrint(s.toString());
+      if(e is DioError){
+        showToast(e.message);
+      }
       return BaseResp.error(message: e.toString(), data: null as T);
     }).then((resp) {
       toastFuture?.dismiss();

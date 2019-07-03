@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 BoxDecoration appDeco(BuildContext context) => BoxDecoration(
       gradient: LinearGradient(
         stops: [0.1, 0.9],
-        colors: [Theme.of(context).colorScheme.secondary, Theme.of(context).colorScheme.primary,],
+        colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary,],
       ),
     );
 
-final ImageLoadingBuilder APP_DEFAULT_LOADING_BUILDER =
+final ImageLoadingBuilder kAppDefaultLoadingBuilder =
     (BuildContext context, Widget child, ImageChunkEvent chunk) {
   if (chunk == null) {
     return child;
